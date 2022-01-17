@@ -16,11 +16,21 @@ class TreeHuffman(object):
         return f"TreeHuffman({self.label}, {self.frq}, {self.left}, {self.right})"
 
     def isFeuille(self):
-        return self.left == NONE and self.right == NONE
+        return self.left == None and self.right == None
+
+    def recherche(self, label_cherche):
+        if self.label == label_cherche:
+            return self
+        if label_cherche in self.right.label:
+            return self.right.recherche(label_cherche)
+        elif label_cherche in self.left.label:
+            return self.left.recherche(label_cherche)
+        else:
+            return "valeur non trouvé"
 
     def parcours_prefixe(self, l):
         """Retourne au final le parcours préfixe de l'arbre, dans la liste l"""
-        l.append(self.label)
+        l.append(str(self.label))
         if self.left:
             l.append('0')
             self.left.parcours_prefixe(l)
@@ -30,7 +40,7 @@ class TreeHuffman(object):
         return l
 
     def __add__(self, other):
-        return TreeHuffman(self.label + other.label, round(other.frq + self.frq, 3), self, other)
+        return TreeHuffman(str(self.label) + str(other.label), round(other.frq + self.frq, 3), self, other)
 
 
 class CompresseurHuffman(object):
@@ -55,24 +65,20 @@ class CompresseurHuffman(object):
         return 'CompressionHuffman()'
 
     def dicoHuffmanDepuisArbre(arbre):
-        """A parir du parcours prefixe, on retrouve le codage de huffman
-        >>> arbre = CompresseurHuffman.arbreDepuisListePonderee([('A', 0.2), ('B', 0.3), ('C', 0.4), ('D', 0.1)])
-        >>> CompresseurHuffman.dicoHuffmanDepuisArbre(arbre)
-        {'C': '0', 'B': '10', 'D': '110', 'A': '111'}
-        """
+        """A parir du parcours prefixe, on retrouve le codage de huffman"""
         parcours_prefx = arbre.parcours_prefixe(l=[])
-        print(parcours_prefx)
-        dico = {}
-        last=""
-        for i in range(1, len(parcours_prefx)-1, 4):
-            if len(parcours_prefx[i+1]) == 1:
-                dico[parcours_prefx[i+1]] = last+parcours_prefx[i]
-            if len(parcours_prefx[i+3]) == 1:
-                dico[parcours_prefx[i+3]] = last+parcours_prefx[i+2]
-            last += parcours_prefx[i + 2]
-        return dico
+        etiquette_code, code_etiquette = {}, {}
+        for lettre in parcours_prefx[0]:
+            path_lettre = ""
+            for j in range(2, len(parcours_prefx), 2):
+                if lettre in parcours_prefx[j]:
+                    path_lettre += parcours_prefx[j-1]
+            etiquette_code[lettre] = path_lettre
+            code_etiquette[path_lettre] = lettre
+        return etiquette_code, code_etiquette
 
-    def arbreDepuisListePonderee(lp)->TreeHuffman:
+
+    def arbreDepuisListePonderee(lp) -> TreeHuffman:
         """Transforme la liste de couple (Etiquette,Entropie) en un tuple modélisant un arbre. Un arbre pondéré est un tuple de la forme (Etiquette,pondération) ou (Arbre,pondération)
         >>> CompresseurHuffman.arbreDepuisListePonderee( [('A', 0.2), ('B', 0.3), ('C', 0.4)])
         TreeHuffman(CAB, 0.9, TreeHuffman(C, 0.4, None, None), TreeHuffman(AB, 0.5, TreeHuffman(A, 0.2, None, None), TreeHuffman(B, 0.3, None, None)))
@@ -86,33 +92,63 @@ class CompresseurHuffman(object):
             larbre.append(a + b)
         return larbre[0]
 
+    def codageHuffman(monBin, verbose=False):
+        """
+        >>> CompresseurHuffman.codageHuffman(Binaire603([5, 5, 5, 5, 5, 5, 5, 5, 6, 6, 6, 7, 7, 9]))
+        ({'9': '000', '7': '001', '6': '01', '5': '1'},
+        {'000': '9', '001': '7', '01': '6', '1': '5'})
+        """
+        freq = monBin.dFrequences()
+        liste_pondere = list({x: y for x, y in freq.items() if y != 0}.items())
+        a = CompresseurHuffman.arbreDepuisListePonderee(liste_pondere)
+        return CompresseurHuffman.dicoHuffmanDepuisArbre(a)
+
+    def binCode(self, monBin, verbose=False):
+        "renvoie une chaine Binaire codée par Huffman"
+        dico = CompresseurHuffman.codageHuffman(monBin)
+        codage=""
+        for element in monBin:
+            codage+=dico[0][str(element)]
+        return codage
+
+
+    def binDecode(self, binC, dico, verbose=False):
+        """renvoie une chaine Binaire decodée par Huffman
+        >>> monCodeur=CompresseurHuffman()
+        >>> monBin=Binaire603([6,6,6,6,6,5,5,5,5,6,6,6,7,8,9,8,8])
+        >>> monBinC=monCodeur.binCode(monBin)
+        >>> monBin==monCodeur.binDecode(monBinC)
+        Binaire603([6,6,6,6,6,5,5,5,5,6,6,6,7,8,9,8,8])
+        """
+        decodage= []
+        while binC!="":
+            i=0
+            while i!=len(binC) and binC[:len(binC)-i] not in dico.keys():
+                i+=1
+            decodage.append(int(dico[binC[:len(binC)-i]]))
+            binC=binC[len(binC)-i:]
+        return Binaire603(decodage)
+
     def demo(self):
+        print("-----------------------------------------------------------------------------------")
         a = CompresseurHuffman.arbreDepuisListePonderee([('A', 0.2), ('B', 0.3), ('C', 0.3), ('D', 0.1), ('E', 0.1)])
         print("Arbre de départ : ", a)
-        print("Codage Huffman : ", CompresseurHuffman.dicoHuffmanDepuisArbre(a))
+        print("Parcours prefixe : ", a.parcours_prefixe(l=[]))
+        # print("Codage Huffman : ", CompresseurHuffman.dicoHuffmanDepuisArbre(a))
+        # CompresseurHuffman.dico_Huff(a)
+        print("recherche de ADE : ", a.recherche('ADE'))
+        print("Dico Huffman : ", CompresseurHuffman.dicoHuffmanDepuisArbre(a))
+        print("-----------------------------------------------------------------------------------")
+        print("Exemple avec Binaire603([5, 5, 5, 5, 5, 5, 5, 5, 6, 6, 6, 7, 7, 9]) ")
+        print("Codage par Huffman : ", CompresseurHuffman().binCode(Binaire603([5, 5, 5, 5, 5, 5, 5, 5, 6, 6, 6, 7, 7, 9])))
+        dico=CompresseurHuffman.dicoHuffmanDepuisArbre(CompresseurHuffman.arbreDepuisListePonderee(list({x: y for x, y in Binaire603([5, 5, 5, 5, 5, 5, 5, 5, 6, 6, 6, 7, 7, 9]).dFrequences().items() if y != 0}.items())))
+        print("Avec le dictionnaire : ", dico)
+        print("Decodage : ", CompresseurHuffman().binDecode(CompresseurHuffman().binCode(Binaire603([5, 5, 5, 5, 5, 5, 5, 5, 6, 6, 6, 7, 7, 9])), dico=dico[1]))
         return a
 
 if __name__ == "__main__":
     import doctest
+
     # doctest.testmod()
     arbre = CompresseurHuffman().demo()
 
-"""def codageHuffman(monBin, verbose=False):
-Renvoie les dictionnaire associant les clés d’Huffman aux valeurs d’octets"
->>> CompresseurHuffman.codageHuffman(Binaire603([5,5,5,5,5,5,5,5,6,6,6,7,7,9]))
-('00': 6, '01': 5, '10': 7, '11': 9, 6: '00', 5: '01', 7: '10', 9: '11')
-
-pass
-
-def binCode(self, monBin, verbose=False):
-"renvoie une chaine Binaire codée par Huffman"
-pass
-
-def binDecode(self, binC, verbose=False):
-renvoie une chaine Binaire decodée par Huffman
->>> monCodeur=CompresseurHuffman()
->>> monBin=Binaire603([6,6,6,6,6,5,5,5,5,6,6,6,7,8,9,8,8])
->>> monBinC=monCodeur.binCode(monBin)
->>> monBin==monCodeur.binDecode(monBinC)
-True
-pass"""

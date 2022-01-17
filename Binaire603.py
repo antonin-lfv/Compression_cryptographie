@@ -163,7 +163,7 @@ class Binaire603(list):  # Voir Object ?
             df[oc] = 0
         for oc in self:
             df[oc] += 1 / n
-        return sorted(df, key=lambda x: df[x], reverse=True)
+        return df
 
     def entropie(self):
         """
