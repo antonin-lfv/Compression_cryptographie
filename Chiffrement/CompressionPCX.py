@@ -1,5 +1,6 @@
 from Binaire603 import *
 from CodeurCA import *
+from Image603 import *
 
 
 class CompressionPCX(object):
@@ -17,18 +18,23 @@ class CompressionPCX(object):
     def __repr__(self):
         return 'CompressionPCX()'
 
-    def binCode(self, monBinD: Binaire603) -> Binaire603:
+    def binCode(self, monImD: Image603):
+        # Affichage image
+        # monImD.affiche()
         # Tri des couleurs par séquence
-        pass
+        palette = monImD.dPalette()
+        print("\nNombre de couleurs : ", len(palette), "\n")
+        couleur_trie = sorted(palette.items(), key=lambda item: item[1][1], reverse=True)
+        print("Couleurs triées : ", *couleur_trie)
 
-    def binDecode(self, monBinC: Binaire603) -> Binaire603:
+    def binDecode(self, monBinC) -> Image603:
         pass
 
     def demo(self):
-        pass
+        CompressionPCX().binCode(monImD=Image603.exImage603())
 
 
 if __name__ == "__main__":
     import doctest
-
     doctest.testmod()
+    CompressionPCX().demo()
