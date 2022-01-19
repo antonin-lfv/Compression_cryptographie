@@ -1,7 +1,6 @@
 from Binaire603 import *
 from CodeurCA import *
 
-
 class TreeHuffman(object):
     """Chaque noeud et chaque feuille à une fréquence"""
 
@@ -16,7 +15,7 @@ class TreeHuffman(object):
         return f"TreeHuffman({self.label}, {self.frq}, {self.left}, {self.right})"
 
     def isFeuille(self):
-        return self.left == None and self.right == None
+        return self.left is None and self.right is None
 
     def recherche(self, label_cherche):
         if self.label == label_cherche:
@@ -95,8 +94,7 @@ class CompresseurHuffman(object):
     def codageHuffman(monBin, verbose=False):
         """
         >>> CompresseurHuffman.codageHuffman(Binaire603([5, 5, 5, 5, 5, 5, 5, 5, 6, 6, 6, 7, 7, 9]))
-        ({'9': '000', '7': '001', '6': '01', '5': '1'},
-        {'000': '9', '001': '7', '01': '6', '1': '5'})
+        ({'9': '000', '7': '001', '6': '01', '5': '1'}, {'000': '9', '001': '7', '01': '6', '1': '5'})
         """
         freq = monBin.dFrequences()
         liste_pondere = list({x: y for x, y in freq.items() if y != 0}.items())
@@ -117,8 +115,8 @@ class CompresseurHuffman(object):
         >>> monCodeur=CompresseurHuffman()
         >>> monBin=Binaire603([6,6,6,6,6,5,5,5,5,6,6,6,7,8,9,8,8])
         >>> monBinC=monCodeur.binCode(monBin)
-        >>> monBin==monCodeur.binDecode(monBinC)
-        Binaire603([6,6,6,6,6,5,5,5,5,6,6,6,7,8,9,8,8])
+        >>> monCodeur.binDecode(monBinC, dico=CompresseurHuffman.dicoHuffmanDepuisArbre(CompresseurHuffman.arbreDepuisListePonderee(list({x: y for x, y in monBin.dFrequences().items() if y != 0}.items())))[1])
+        Binaire603([ 0x06, 0x06, 0x06, 0x06, 0x06, 0x05, 0x05, 0x05, 0x05, 0x06, 0x06, 0x06, 0x07, 0x08, 0x09, 0x08, 0x08])
         """
         decodage= []
         while binC!="":
@@ -130,24 +128,25 @@ class CompresseurHuffman(object):
         return Binaire603(decodage)
 
     def demo(self):
-        print("-----------------------------------------------------------------------------------")
-        a = CompresseurHuffman.arbreDepuisListePonderee([('A', 0.2), ('B', 0.3), ('C', 0.3), ('D', 0.1), ('E', 0.1)])
+        print("\n-------------------------------------- Zone de test et affichage ---------------------------------------------")
+        liste_pond = [('A', 0.2), ('B', 0.3), ('C', 0.3), ('D', 0.1), ('E', 0.1)]
+        a = CompresseurHuffman.arbreDepuisListePonderee(liste_pond)
         print("Arbre de départ : ", a)
         print("Parcours prefixe : ", a.parcours_prefixe(l=[]))
         # print("Codage Huffman : ", CompresseurHuffman.dicoHuffmanDepuisArbre(a))
         # CompresseurHuffman.dico_Huff(a)
         print("recherche de ADE : ", a.recherche('ADE'))
         print("Dico Huffman : ", CompresseurHuffman.dicoHuffmanDepuisArbre(a))
-        print("-----------------------------------------------------------------------------------")
+        print("\n-------------------------------------- Exemple du TP ---------------------------------------------------------")
         print("Exemple avec Binaire603([5, 5, 5, 5, 5, 5, 5, 5, 6, 6, 6, 7, 7, 9]) ")
-        print("Codage par Huffman : ", CompresseurHuffman().binCode(Binaire603([5, 5, 5, 5, 5, 5, 5, 5, 6, 6, 6, 7, 7, 9])))
-        dico=CompresseurHuffman.dicoHuffmanDepuisArbre(CompresseurHuffman.arbreDepuisListePonderee(list({x: y for x, y in Binaire603([5, 5, 5, 5, 5, 5, 5, 5, 6, 6, 6, 7, 7, 9]).dFrequences().items() if y != 0}.items())))
+        monBinaire = Binaire603([5, 5, 5, 5, 5, 5, 5, 5, 6, 6, 6, 7, 7, 9])
+        print("Codage par Huffman : ", CompresseurHuffman().binCode(monBinaire))
+        dico = CompresseurHuffman.dicoHuffmanDepuisArbre(CompresseurHuffman.arbreDepuisListePonderee(list({x: y for x, y in monBinaire.dFrequences().items() if y != 0}.items())))
         print("Avec le dictionnaire : ", dico)
-        print("Decodage : ", CompresseurHuffman().binDecode(CompresseurHuffman().binCode(Binaire603([5, 5, 5, 5, 5, 5, 5, 5, 6, 6, 6, 7, 7, 9])), dico=dico[1]))
+        print("Decodage : ", CompresseurHuffman().binDecode(CompresseurHuffman().binCode(monBinaire), dico=dico[1]))
         return a
 
 if __name__ == "__main__":
     import doctest
-
-    # doctest.testmod()
+    doctest.testmod()
     arbre = CompresseurHuffman().demo()

@@ -1,6 +1,7 @@
 from Binaire603 import *
 from CodeurCA import *
-
+from Texte603 import *
+from arithmetiquedansZnZ import *
 
 class Chiffrement_par_decalage(object):
     """Un codeur doit surcharger les méthodes __init__ __repr__ __str__
@@ -15,7 +16,7 @@ class Chiffrement_par_decalage(object):
         return 'Chiffrement par décalage'
 
     def __repr__(self):
-        return 'Chiffrement_par_decalage()'
+        return f'Chiffrement_par_decalage({self.decalage})'
 
     def binCode(self, monBinD: Binaire603) -> Binaire603:
         """ Exemple :
@@ -32,16 +33,23 @@ class Chiffrement_par_decalage(object):
         return Binaire603(list(map(lambda x: (x - self.decalage) % 255, monBinC)))
 
     def demo(self):
+        print("\n<--------- A partir d'un Binaire 603 --------->")
         print("Source : Binaire603([1, 2, 3, 4, 25])")
         code = Chiffrement_par_decalage(2).binCode(Binaire603([1, 2, 3, 4, 25]))
         print("Codage : ", code)
         decode = Chiffrement_par_decalage(2).binDecode(code)
         print("Decodage : ", decode)
         print("Final : ", list(map(int, decode)))
+        print("\n<--------- A partir d'un Text 603 ------------>")
+        print("Source Text603('Ceci est un texte')")
+        code = Chiffrement_par_decalage(2).binCode(Texte603("Ceci est un texte").toBinaire603())
+        print("Codage : ", code)
+        decode = Chiffrement_par_decalage(2).binDecode(code)
+        print("Decodage : ", decode)
+        print("Final : ", Texte603(decode))
 
 
 if __name__ == "__main__":
     import doctest
-
     doctest.testmod()
     Chiffrement_par_decalage(2).demo()
