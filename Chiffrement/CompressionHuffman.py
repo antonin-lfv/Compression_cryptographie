@@ -42,7 +42,7 @@ class TreeHuffman(object):
         return TreeHuffman(str(self.label) + str(other.label), round(other.frq + self.frq, 3), self, other)
 
 
-class CompresseurHuffman(object):
+class CompresseurHuffman(CodeurCA):
     """Un codeur doit surcharger les méthodes __init__ __repr__ __str__
     binCode, binDecode et codeurTest
     renvoyant et recevant un Binaire603
@@ -55,7 +55,7 @@ class CompresseurHuffman(object):
     """
 
     def __init__(self):
-        pass
+        super().__init__()
 
     def __str__(self):
         return 'Compresseur par répétition'

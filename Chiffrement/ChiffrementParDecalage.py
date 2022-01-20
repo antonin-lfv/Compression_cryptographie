@@ -3,13 +3,14 @@ from CodeurCA import *
 from Texte603 import *
 from arithmetiquedansZnZ import *
 
-class Chiffrement_par_decalage(object):
+class Chiffrement_par_decalage(CodeurCA):
     """Un codeur doit surcharger les méthodes __init__ __repr__ __str__
     binCode, binDecode et codeurTest
     renvoyant et recevant un Binaire603
     C'est une forme de classe abstraites"""
 
     def __init__(self, decalage):
+        super().__init__()
         self.decalage = decalage
 
     def __str__(self):
