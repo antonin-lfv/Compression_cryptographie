@@ -7,9 +7,9 @@ from arithmetiquedansZnZ import *
 class Chiffrement_affine(CodeurCA):
     def __init__(self, a, b):
         super().__init__()
-        self.a = a
-        assert ElmtZnZ(self.a, 256).estInversible()
-        self.b = b
+        self.a = ElmtZnZ(a, 256).element
+        assert ElmtZnZ(a, 256).estInversible()
+        self.b = ElmtZnZ(b, 256).element
 
     def __str__(self):
         return 'Chiffrement affine'

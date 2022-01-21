@@ -1,26 +1,46 @@
 import random
 from arithmetiquedansZnZ import *
+from utils import *
+
 
 class Permutation603:
-    def __init__(self, liste):
-        self.liste = liste
+    def __init__(self, lp, indices=None):
+        self.lp = lp
+        if not indices:
+            self.indices = [i for i in range(len(lp))]
+        else:
+            self.indices = indices
 
     def __str__(self):
-        return f"{self.liste}"
+        return f"{self.lp}"
 
     def __repr__(self):
-        return f"Permutation603({self.liste})"
+        return f"Permutation603({self.lp})"
+
+    def __eq__(self, other):
+        return self.lp == other.lp and self.indices == other.indices
+
+    def __len__(self):
+        return len(self.lp)
 
     def __pow__(self, power, modulo=None):
-        """
-        >>> Permutation603([1, 2, 3, 0])**2
+        """ Permutation à droite
+        >>> Permutation603([3, 0, 1, 2])**2
         Permutation603([2, 3, 0, 1])
         >>> Permutation603([1, 2, 3, 0])**4
         Permutation603([0, 1, 2, 3])
         >>> Permutation603([1, 2, 3, 0])**(-1)
         Permutation603([3, 0, 1, 2])
         """
-        return Permutation603(liste=list(map(lambda x: ElmtZnZ(element=x + (power - 1), n=len(self.liste)).element, self.liste)))
+        power = ElmtZnZ(element=power,  n=len(self)).element
+        ma_perm = self
+        for j in range(power-1):
+            res = []
+            for i in range(len(ma_perm.lp)):
+                res += [ma_perm.lp[ma_perm.indices.index(ma_perm.lp[i])]]
+            ma_perm.indices = ma_perm.lp
+            ma_perm.lp = res
+        return ma_perm
 
     def ordre(self):
         """Renvoie l’ordre de la permutation
@@ -29,11 +49,16 @@ class Permutation603:
         >>> Permutation603([1,0,2,3]).ordre()
         2
         """
-        return self.liste.index(0) + 1
+        init = [i for i in range(len(self))]
+        i = 0
+        while (self ** (i+1)).lp != init:
+            print("puissance ", (self ** (i+1)).lp, "indice ", init)
+            i += 1
+        return i-1
 
     def permuAlea(self):
         """Renvoie une permutation aléatoire avec randint"""
-        return self**(random.randint(1, len(self.liste)+1))
+        return self ** (random.randint(1, len(self.lp) + 1))
 
     def permuKieme(k, n=6):
         raise NotImplementedError
@@ -43,16 +68,19 @@ class Permutation603:
 
     def demo(self):
         print("<---------- Début ---------->\n")
-        perm = self
-        print("Ordre de Permutation603([1, 2, 3, 0]) : ", perm.ordre())
+        perm = Permutation603([1, 0, 2, 3])
+        print(f"Ordre de Permutation603([1,0,2,3]) : ", perm.ordre())
         perm2 = self ** 2
-        print("Permutation à l'ordre 2 de Permutation603([1, 2, 3, 0]) : ", perm2)
+        print(f"Permutation à l'ordre 2 de Permutation603({self.lp}) : ", perm2)
         permAlea = self.permuAlea()
-        print("Permutation aléatoire de Permutation603([1, 2, 3, 0]) : ", permAlea)
-
+        print(f"Permutation aléatoire de Permutation603({self.lp}) : ", permAlea)
 
 if __name__ == "__main__":
+    print(Permutation603(lp=[3, 0, 1, 2]) ** 3)
+    print(Permutation603(lp=[1, 2, 3, 0]).ordre())
+    print(Permutation603(lp=[1, 0, 2, 3]).ordre())
+    """
     import doctest
 
-    doctest.testmod()
-    Permutation603([1, 2, 3, 0]).demo()
+    # doctest.testmod()
+    Permutation603([3, 0, 1, 2]).demo()"""
