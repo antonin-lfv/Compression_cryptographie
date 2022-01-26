@@ -24,14 +24,14 @@ class Chiffrement_par_decalage(CodeurCA):
         >>> Chiffrement_par_decalage(2).binCode(Binaire603([1,2,3,4,25]))
         Binaire603([ 0x03, 0x04, 0x05, 0x06, 0x1b])
         """
-        return Binaire603(list(map(lambda x: (x + self.decalage) % 255, monBinD)))
+        return Binaire603(list(map(lambda x: (x + self.decalage) % 256, monBinD)))
 
     def binDecode(self, monBinC: Binaire603) -> Binaire603:
         """ Exemple :
         >>> Chiffrement_par_decalage(2).binDecode(Binaire603([1,2,3,4,25]))
         Binaire603([ 0xfe, 0x00, 0x01, 0x02, 0x17])
         """
-        return Binaire603(list(map(lambda x: (x - self.decalage) % 255, monBinC)))
+        return Binaire603(list(map(lambda x: (x - self.decalage) % 256, monBinC)))
 
     def demo(self):
         print("\n<--------- A partir d'un Binaire 603 --------->")

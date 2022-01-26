@@ -40,6 +40,7 @@ class Permutation603:
                 res += [ma_perm.lp[ma_perm.indices.index(ma_perm.lp[i])]]
             ma_perm.indices = ma_perm.lp
             ma_perm.lp = res
+            print(res)
         return ma_perm
 
     def ordre(self):
@@ -49,12 +50,11 @@ class Permutation603:
         >>> Permutation603([1,0,2,3]).ordre()
         2
         """
-        init = [i for i in range(len(self))]
+        init = sorted(self.lp)
         i = 0
-        while (self ** (i+1)).lp != init:
-            print("puissance ", (self ** (i+1)).lp, "indice ", init)
+        while (self ** (i+2)).lp != init:
             i += 1
-        return i-1
+        return i
 
     def permuAlea(self):
         """Renvoie une permutation aléatoire avec randint"""
@@ -76,11 +76,13 @@ class Permutation603:
         print(f"Permutation aléatoire de Permutation603({self.lp}) : ", permAlea)
 
 if __name__ == "__main__":
+
     print(Permutation603(lp=[3, 0, 1, 2]) ** 3)
-    print(Permutation603(lp=[1, 2, 3, 0]).ordre())
-    print(Permutation603(lp=[1, 0, 2, 3]).ordre())
+    # print(Permutation603(lp=[1, 2, 3, 0]).ordre())
+    # print(Permutation603(lp=[1, 0, 2, 3]).ordre())
     """
     import doctest
 
     # doctest.testmod()
-    Permutation603([3, 0, 1, 2]).demo()"""
+    """
+    # Permutation603([3, 0, 1, 2]).demo()
