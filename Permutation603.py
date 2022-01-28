@@ -27,14 +27,10 @@ class Permutation603:
         """ Permutation à droite
         >>> Permutation603([2, 3, 1, 0])**4
         Permutation603([3, 2, 0, 1])
-        Permutation603([1, 2, 3, 0])**4
-        Permutation603([0, 1, 2, 3])
-        Permutation603([1, 2, 3, 0])**(-1)
-        Permutation603([3, 0, 1, 2])
         """
-        power = ElmtZnZ(element=power,  n=len(self)+1).element
+        power = ElmtZnZ(element=power, n=len(self) + 1).element
         ma_perm = self
-        for j in range(power-1):
+        for j in range(power - 1):
             res = []
             for i in range(len(ma_perm.lp)):
                 res += [ma_perm.lp[ma_perm.indices.index(ma_perm.lp[i])]]
@@ -51,7 +47,7 @@ class Permutation603:
         """
         init = sorted(self.lp)
         i = 0
-        while (self ** (i+2)).lp != init:
+        while (self ** (i)).lp != init:
             i += 1
         return i
 
@@ -74,10 +70,10 @@ class Permutation603:
         permAlea = self.permuAlea()
         print(f"Permutation aléatoire de Permutation603({self.lp}) : ", permAlea)
 
-if __name__ == "__main__":
 
+if __name__ == "__main__":
     print(Permutation603(lp=[2, 3, 1, 0]) ** 3)
-    # print(Permutation603(lp=[1, 2, 3, 0]).ordre())
+    print(Permutation603(lp=[2, 3, 1, 0]).ordre())
     # print(Permutation603(lp=[1, 0, 2, 3]).ordre())
     """
     import doctest

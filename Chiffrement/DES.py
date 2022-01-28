@@ -22,10 +22,10 @@ def apply_permutation_init_final(message, mode='init') -> list:
     resultat = []
     if mode == 'init':
         for i in PI:
-            resultat += [message[i-1]]
+            resultat += [message[i - 1]]
     else:
         for i in PIinverse:
-            resultat += [message[i-1]]
+            resultat += [message[i - 1]]
     return resultat
 
 
@@ -34,7 +34,7 @@ def fonction_developpement(R='01101001010110110010011010101000') -> list:
     res = []
     E = sum(DES()['E'], [])
     for i in E:
-        res += [R[i-1]]
+        res += [R[i - 1]]
     return res
 
 
@@ -46,24 +46,31 @@ def xor_on_2_lists(l1, l2) -> list:
     return res
 
 
+def decoupe_en_n_octets(n, liste_octets):
+    res = []
+    for i in range(0, len(liste_octets), n):
+        res += [liste_octets[i:i + n]]
+    return res
+
+
+def apply_SBox_on_list(list):
+    C, numS = [], 1
+    for i in list:
+        Sbox = SBox()[numS]
+        """Je suis sur 6bits"""
+        b1b6 = int(str(i[0]) + str(i[5]), 2)  # en decimal
+        b2b5 = int(str(i[j] for j in [2, 3, 4, 5]), 2)  # en decimal
+        C += [('0000' + format(Sbox[b1b6][b2b5], 'b'))[-4:]]  # en binaire sur 4 bits
+        numS += 1
+    return C
+
+
 def fonction_f_DES(R, K):
     """Fonction f du DES"""
     # calcul de E(R) pour avoir 48 bits
     R = fonction_developpement(R)
     B = xor_on_2_lists(R, K)
-    pass
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    B_decoupe = decoupe_en_n_octets(n=6, liste_octets=B)
+    C_decoupe = apply_SBox_on_list(B_decoupe)
+    # permutation
+    return C_decoupe
