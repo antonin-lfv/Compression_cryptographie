@@ -16,7 +16,7 @@ def cle_hexa_to_bin(cle_hex='133457799BBCDFF1') -> str:
     return binary_value
 
 
-def apply_permutation_init_final(message, mode='init'):
+def apply_permutation_init_final(message, mode='init') -> list:
     """On fait permutation au début et à la fin avec PI et PIinverse"""
     PI, PIinverse = sum(DES()['PI'], []), sum(DES()['PIinverse'], [])  # flatten
     resultat = []
@@ -28,7 +28,9 @@ def apply_permutation_init_final(message, mode='init'):
             resultat += [message[i-1]]
     return resultat
 
-def fonction_developpement(R='01101001010110110010011010101000'):
+
+def fonction_developpement(R='01101001010110110010011010101000') -> list:
+    """Developpe le message R pour passer de 32 à 48 bits"""
     res = []
     E = sum(DES()['E'], [])
     for i in E:
@@ -36,7 +38,8 @@ def fonction_developpement(R='01101001010110110010011010101000'):
     return res
 
 
-def xor_on_2_lists(l1, l2):
+def xor_on_2_lists(l1, l2) -> list:
+    """Effectue le calcul XOR sur 2 listes de bits, bit à bit"""
     res = []
     for i, j in zip(l1, l2):
         res += [xor(i, j)]
@@ -44,13 +47,11 @@ def xor_on_2_lists(l1, l2):
 
 
 def fonction_f_DES(R, K):
-    """fonction f du DES"""
+    """Fonction f du DES"""
     # calcul de E(R) pour avoir 48 bits
     R = fonction_developpement(R)
     B = xor_on_2_lists(R, K)
     pass
-
-
 
 
 

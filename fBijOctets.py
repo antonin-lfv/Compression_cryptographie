@@ -57,7 +57,7 @@ class fBijParAffine(fBijOctetsCA):
 
     def plot_diffusion(self, monBin: Binaire603):
         lx = monBin
-        ly_code = list(map(lambda x: fBijParAffine(self.a, self.b).__call__(x), monBin))
+        ly_code = list(map(lambda x: fBijParAffine(self.a, self.b)(x), monBin))
         ly_origine = monBin
         lY_difference = [i-j for i, j in zip(ly_code, ly_origine)]
         fig = go.Figure()
@@ -70,12 +70,19 @@ class fBijParAffine(fBijOctetsCA):
         fig.update_layout(title=f"Chiffrement affine avec {self.a}x + {self.b}")
         plot(fig)
 
+    def affiche(self):
+        lk = [k for k in range(256)]
+        lfk = [self(k) for k in lk]
+        plt.plot(lk, lfk, '*')
+        plt.title(self)
+        plt.show()
+
 
 if __name__ == '__main__':
     monBin = Binaire603([11, 18, 1, 19, 12, 7, 21])
 
     # Décalage
-    # fBijParDecallage(decalage=2).plot_diffusion(monBin)
+    fBijParDecallage(decalage=2).plot_diffusion(monBin)
 
     # Affine
-    fBijParAffine(a=3, b=4).plot_diffusion(monBin)
+    # fBijParAffine(a=3, b=4).plot_diffusion(monBin)

@@ -25,14 +25,14 @@ class Permutation603:
 
     def __pow__(self, power, modulo=None):
         """ Permutation à droite
-        >>> Permutation603([3, 0, 1, 2])**2
-        Permutation603([2, 3, 0, 1])
-        >>> Permutation603([1, 2, 3, 0])**4
+        >>> Permutation603([2, 3, 1, 0])**4
+        Permutation603([3, 2, 0, 1])
+        Permutation603([1, 2, 3, 0])**4
         Permutation603([0, 1, 2, 3])
-        >>> Permutation603([1, 2, 3, 0])**(-1)
+        Permutation603([1, 2, 3, 0])**(-1)
         Permutation603([3, 0, 1, 2])
         """
-        power = ElmtZnZ(element=power,  n=len(self)).element
+        power = ElmtZnZ(element=power,  n=len(self)+1).element
         ma_perm = self
         for j in range(power-1):
             res = []
@@ -40,7 +40,6 @@ class Permutation603:
                 res += [ma_perm.lp[ma_perm.indices.index(ma_perm.lp[i])]]
             ma_perm.indices = ma_perm.lp
             ma_perm.lp = res
-            print(res)
         return ma_perm
 
     def ordre(self):
@@ -68,8 +67,8 @@ class Permutation603:
 
     def demo(self):
         print("<---------- Début ---------->\n")
-        perm = Permutation603([1, 0, 2, 3])
-        print(f"Ordre de Permutation603([1,0,2,3]) : ", perm.ordre())
+        perm = Permutation603([2, 3, 1, 0])
+        print(f"Ordre de Permutation603([2, 3, 1, 0]) : ", perm.ordre())
         perm2 = self ** 2
         print(f"Permutation à l'ordre 2 de Permutation603({self.lp}) : ", perm2)
         permAlea = self.permuAlea()
@@ -77,7 +76,7 @@ class Permutation603:
 
 if __name__ == "__main__":
 
-    print(Permutation603(lp=[3, 0, 1, 2]) ** 3)
+    print(Permutation603(lp=[2, 3, 1, 0]) ** 3)
     # print(Permutation603(lp=[1, 2, 3, 0]).ordre())
     # print(Permutation603(lp=[1, 0, 2, 3]).ordre())
     """
