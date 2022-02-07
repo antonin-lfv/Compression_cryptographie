@@ -9,10 +9,6 @@ from DES import *
 
 
 class fBijDES(CodeurDES):
-    """Un codeur doit surcharger les méthodes __init__ __repr__ __str__
-    binCode, binDecode et codeurTest
-    renvoyant et recevant un Binaire603
-    C'est une forme de classe abstraites"""
 
     def __init__(self, cle, f, nbTours):
         super().__init__()
@@ -21,10 +17,10 @@ class fBijDES(CodeurDES):
         self.nbTours = nbTours
 
     def __str__(self):
-        return "Fonction Feistel"
+        return "Fonction Feistel/DES"
 
     def __repr__(self):
-        return f'fBijFeistel({self.cle},{self.f},{self.nbTours})'
+        return f'fBijDES({self.cle},{self.f},{self.nbTours})'
 
     def __call__(self, octet):
         cle_hexa_to_bin(cle_hex='133457799BBCDFF1')
