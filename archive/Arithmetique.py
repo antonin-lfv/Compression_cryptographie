@@ -1,5 +1,6 @@
 from math import isqrt
 
+
 def bezout(a, b) -> int:
     """Trouver la relation de bezout tq au+bv=pgcd(a,b)"""
     s, t, u, v = 1, 0, 0, 1
@@ -8,6 +9,7 @@ def bezout(a, b) -> int:
         a, s, t, b, u, v = b, u, v, a - q * b, s - q * u, t - q * v
     # return u0, v0, PGCD
     return (s, t, a) if a > 0 else (-s, -t, -a)
+
 
 def est_premier(n) -> bool:
     """Test de primalité de n"""
@@ -19,7 +21,8 @@ def est_premier(n) -> bool:
                 return False
     return True
 
-def pgcd(a,b) -> int:
+
+def pgcd(a, b) -> int:
     """PGCD de a et b"""
     if b == 0:
         return a
@@ -27,9 +30,11 @@ def pgcd(a,b) -> int:
         r = a % b
         return pgcd(b, r)
 
-def ppcm(a,b) -> int:
+
+def ppcm(a, b) -> int:
     """ppcm de a et b"""
-    (a*b)/pgcd(a, b)
+    (a * b) / pgcd(a, b)
+
 
 def decomposition_puissance_2(a):
     resultat = []
@@ -57,6 +62,7 @@ def exponentiation_rapide(a, p, m):
     for i in range(len(tempo) - 1):
         resultat = resultat * tempo[i + 1] % m
     return resultat
+
 
 def facteurs_premiers(a):
     if a < 2:

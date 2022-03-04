@@ -53,8 +53,8 @@ class ElmtZnZ:
     def __init__(self, element, n):
         self.n = n
         self.element = element % n
-        self.table_multiplication = table_multiplication(self.n)
-        self.table_addition = table_addition(self.n)
+        # self.table_multiplication = table_multiplication(self.n)
+        # self.table_addition = table_addition(self.n)
 
     def __str__(self):
         """Affichage d'un objet"""
@@ -180,10 +180,11 @@ class ElmtZnZ:
         >>> ElmtZnZ(element=10, n=11).estInversible()
         True
         """
-        if 1 in self.table_multiplication[self.element]:
+        """if 1 in self.table_multiplication[self.element]:
             return True
         else:
-            return False
+            return False"""
+        raise NotImplementedError
 
     def inverse(self):
         """
