@@ -3,7 +3,6 @@ import copy
 from random import *
 from math import sqrt, log
 from sympy import isprime
-from arithmetiqueDansZ import *  # Doit contenir les méthodes racineCarree à prendre dans le corrigé
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib
@@ -30,11 +29,11 @@ class ElemtE07(object):
         if isinstance(x, ElemtE07):
             self.x, self.y = x.x, x.y
         else:
-            self.x = x if isinstance(x, ElmtZnZ) else ElmtZnZ(x, p)
+            self.x = ElmtZnZ(x) if isinstance(x, ElmtZnZ) else ElmtZnZ(x, p)
             if type(y) in [type(None), str]:  # Elément neutre à l'infini
                 self.y = "INF"
             else:
-                self.y = y if isinstance(y, ElmtZnZ) else ElmtZnZ(y, self.x.n)
+                self.y = ElmtZnZ(y) if isinstance(y, ElmtZnZ) else ElmtZnZ(y, self.x.n)
             assert isinstance(self.y, str) or (self.y ** 2 == self.x ** 3 + 7), f"{self=} ne vérifie pas l'équation"
 
     def lDesElements(p=47):
@@ -89,18 +88,18 @@ class ElemtE07(object):
         if self == 0:
             return "O(à l'infini)"
         else:
-            return f"({self.x.a},{self.y.a})[{self.x.n}]"
+            return f"({self.x.element},{self.y.element})[{self.x.n}]"
 
     def __repr__(self):
         """
         """
         if isinstance(self.y, ElmtZnZ):
-            valy = self.y.a
+            valy = self.y.element
         elif isinstance(self.y, str):
             valy = f'"{self.y}"'
         else:
             valy = self.y
-        return f"ElemtE07({self.x.a},{valy},{self.x.n})"
+        return f"ElemtE07({self.x.element},{valy},{self.x.n})"
 
     def __add__(self, other):
         """
@@ -109,7 +108,13 @@ class ElemtE07(object):
         >>> (ElemtE07(3,"INF",47)+ElemtE07(3,9,47))+ElemtE07(3,"INF",47)
         ElemtE07(3,9,47)
         """
-        pass
+        lambd = (other.y - self.y).element // (other.x - self.x).element
+        print("lambda : ", lambd)
+        print(self.x, other.x)
+        x = lambd ** 2 - self.x - other.x
+        print("x=", ElmtZnZ(x))
+        print("y=", -lambd * (x - self.x) - self.y)
+        return ElemtE07(ElmtZnZ(x), ElmtZnZ(-lambd * (x - self.x) - self.y))
 
     def double(self):
         """
@@ -240,7 +245,7 @@ class ElemtE07(object):
             r = choice(lel)
         return r
 
-    def affichePointMaxDOrdresPremier():
+    def affichePointMaxDOrdresPremier(self):
         p = 7
         while p < 1000:
             p = nbPremierSuivant(p)
@@ -259,19 +264,23 @@ class ElemtE07(object):
 if __name__ == "__main__":
     import doctest
 
-    doctest.testmod()
-    p = 11  # p=65537
-    x = ElmtZnZ(2, p)
-    M = ElemtE07.elemtE07APartirDeX(x)
-    print(M)
-    e = ElemtE07.randElemtE07(p)
-    print(f"{e=}")
+    # doctest.testmod()
+    # p = 11  # p=65537
+    # x = ElmtZnZ(2, p)
+    # M = ElemtE07.elemtE07APartirDeX(x)
+    # print(M)
+    # e = ElemtE07.randElemtE07(p)
+    # print(f"{e=}")
     # el=ElemtE07.eDesElements(p)
     # print(el)
-    g = ElemtE07.randGenerateurE07(p)
-    print(f"{g=}")
-    afficheGraphique1(17)
+    # g = ElemtE07.randGenerateurE07(p)
+    # print(f"{g=}")
+    # afficheGraphique1(17)
 
     # demoVitesse()
     # ElmtZnZ.demo1()
     # ElmtZnZ(8,60).demoDiv()
+
+    test1 = ElemtE07(ElmtZnZ(2, 11), ElmtZnZ(2, 11))
+    test2 = ElemtE07(ElmtZnZ(3, 11), ElmtZnZ(1, 11))
+    test1 + test2

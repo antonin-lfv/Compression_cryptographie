@@ -2,18 +2,24 @@ import numpy as np
 from utils import *
 import math
 
+
+
 def table_addition(n):
     tab = np.empty((n, n))
     for i in range(n):
         for j in range(n):
             tab[i, j] = (i + j) % n
     return tab
+
+
 def table_multiplication(n):
     tab = np.empty((n, n))
     for i in range(n):
         for j in range(n):
             tab[i, j] = (i * j) % n
     return tab
+
+
 def decomposition_puissance_2(a):
     """
     renvoie les puissances de 2 à effectuer pour obtenir 'a' (ex : 2^2 + 2^3 = 12)
@@ -28,6 +34,8 @@ def decomposition_puissance_2(a):
         if a != 0:
             puissance = int(math.log2(a))
     return resultat
+
+
 def exponentiation_rapide(a, p, m):
     """
     renvoie le resultat de (a^p) % m
@@ -49,12 +57,17 @@ def exponentiation_rapide(a, p, m):
         resultat = resultat * tempo[i + 1] % m
     return resultat
 
+
 class ElmtZnZ:
-    def __init__(self, element, n):
-        self.n = n
-        self.element = element % n
-        # self.table_multiplication = table_multiplication(self.n)
-        # self.table_addition = table_addition(self.n)
+    def __init__(self, element, n=None):
+        if isinstance(element, ElmtZnZ):
+            self.element, self.n = element.element, element.n
+        else:
+            self.n = n
+            self.element = element % n
+        # ajouter si ElemE07 :
+        self.table_multiplication = table_multiplication(self.n)
+        self.table_addition = table_addition(self.n)
 
     def __str__(self):
         """Affichage d'un objet"""
@@ -74,8 +87,15 @@ class ElmtZnZ:
         Retourne si deux éléments sont égaux dans Z/nZ
         >>> ElmtZnZ(element=18, n=9) == ElmtZnZ(element=9, n=9)
         True
+        >>> ElmtZnZ(2, 11) == 2
+        True
         """
-        return self.n == other.n and self.element == other.element % self.n
+        if isinstance(other, ElmtZnZ):
+            return self.n == other.n and self.element == other.element % self.n
+        else:
+            print(other)
+            assert isinstance(other, int), str(other)
+            return self.element == other
         # return f'{self.element}={other.element} dans ℤ/{self.n}ℤ' if (self.n == other.n and self.element == other.element) else f'{self.element}!={other.element} dans ℤ/{self.n}ℤ'
 
     def __add__(self, other):
@@ -84,9 +104,13 @@ class ElmtZnZ:
         exemple : dans Z/9Z
         >>> ElmtZnZ(element=9, n=10) + ElmtZnZ(element=9, n=10)
         ElmtZnZ(8, 10)
+        >>> ElmtZnZ(8,11)+7
+        4
         """
         if isinstance(other, ElmtZnZ):
             return ElmtZnZ(element=(self.element + other.element) % self.n, n=self.n)
+        else:
+            return ElmtZnZ(self.element+other, self.n)
             # return f'La somme de {other.element} et {self.element} est {(self.element + other.element) % self.n} dans ℤ/{self.n}ℤ '
 
     def __radd__(self, other):
